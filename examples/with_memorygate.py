@@ -91,7 +91,7 @@ class MemoryGateClient:
             )
             response.raise_for_status()
             result = response.json()
-            print(f"[MemoryGate] ✅ Ingested: {memory_id}")
+            print(f"[MemoryGate] SUCCESS: Ingested: {memory_id}")
             return result.get("status") == "success"
         except requests.exceptions.RequestException as e:
             print(f"[MemoryGate] ERROR: Failed to ingest {memory_id}: {e}")
@@ -116,7 +116,7 @@ class MemoryGateClient:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            print(f"[MemoryGate] ❌ Query failed: {e}")
+            print(f"[MemoryGate] ERROR: Query failed: {e}")
             if hasattr(e, 'response') and e.response is not None:
                 print(f"    Response: {e.response.text}")
             return {"results": [], "active_count": 0, "suppressed_count": 0}
@@ -199,7 +199,7 @@ def main():
     for i, result in enumerate(results, 1):
         print(f"\n  [{i}] Memory ID: {result['memory_id']}")
         print(f"      Relevance (semantic similarity): {result['relevance']:.4f}")
-        print(f"      Trust Score (reliability): {result['reliability']:.4f}  ← Decays with corrections")
+        print(f"      Trust Score (reliability): {result['reliability']:.4f}  (Decays with corrections)")
         print(f"      Confidence (relevance × trust): {result['confidence']:.4f}")
         print(f"      Low Confidence: {result['low_confidence']}")
         print(f"      Suppressed: {result['is_suppressed']}")
@@ -236,7 +236,7 @@ def main():
     # Re-query (demonstrates the solution)
     print(f"\n[6] Re-querying: '{query}'")
     print("-" * 70)
-    print("✅ SOLUTION: Trust filtering prevents old fact from resurfacing!")
+    print("SOLUTION: Trust filtering prevents old fact from resurfacing!")
     print()
     
     response_after = client.query(query, limit=3)
@@ -260,7 +260,7 @@ def main():
         # Check if this is the corrected memory
         if result['memory_id'] == correction["memory_id"]:
             if result['low_confidence'] or result['is_suppressed']:
-                print(f"      ✅ CORRECTED MEMORY SUPPRESSED (trust decay: {result['reliability']:.4f} → filtered)")
+                print(f"      SUCCESS: CORRECTED MEMORY SUPPRESSED (trust decay: {result['reliability']:.4f} -> filtered)")
             else:
                 print(f"      WARNING: Corrected memory still active (trust: {result['reliability']:.4f}, may need time to propagate)")
     
@@ -277,7 +277,7 @@ def main():
     print("CONCLUSION")
     print("=" * 70)
     if not old_memory_in_results:
-        print("✅ SUCCESS: MemoryGate trust filtering prevented corrected fact from resurfacing!")
+        print("SUCCESS: MemoryGate trust filtering prevented corrected fact from resurfacing!")
         print("\nKey differences from baseline RAG:")
         print("  1. Trust filtering occurs BEFORE LLM sees context")
         print("  2. Low-confidence memories are excluded from results")
