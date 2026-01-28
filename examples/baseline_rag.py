@@ -14,7 +14,7 @@ import os
 import sys
 import io
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
@@ -22,8 +22,8 @@ from sentence_transformers import SentenceTransformer
 if sys.platform == 'win32':
     try:
         # Try to reconfigure stdout/stderr to UTF-8
-        sys.stdout.reconfigure(encoding='utf-8')
-        sys.stderr.reconfigure(encoding='utf-8')
+        sys.stdout.reconfigure(encoding='utf-8')  # type: ignore
+        sys.stderr.reconfigure(encoding='utf-8')  # type: ignore
     except (AttributeError, ValueError):
         # Fallback for older Python versions - wrap stdout/stderr
         sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
@@ -42,9 +42,9 @@ class BaselineRAG:
         print("[Baseline RAG] Loading embedding model...")
         self.embedder = SentenceTransformer('all-MiniLM-L6-v2')
         self.memories: List[Dict[str, Any]] = []
-        self.embeddings: np.ndarray = None
+        self.embeddings: Optional[np.ndarray] = None
         
-    def add_memory(self, memory_id: str, content: str, metadata: Dict[str, Any] = None):
+    def add_memory(self, memory_id: str, content: str, metadata: Optional[Dict[str, Any]] = None):
         """Add a memory to the system."""
         embedding = self.embedder.encode(content, normalize_embeddings=True)
         
@@ -62,13 +62,14 @@ class BaselineRAG:
         if self.embeddings is None:
             self.embeddings = np.array([embedding])
         else:
-            self.embeddings = np.vstack([self.embeddings, embedding])
+            # Type checker knows embeddings is not None here due to the if check
+            self.embeddings = np.vstack([self.embeddings, embedding])  # type: ignore
         
         print(f"[Baseline RAG] Added memory: {memory_id}")
     
     def query(self, query_text: str, n_results: int = 5) -> List[Dict[str, Any]]:
         """Query the system - naive retrieval with no trust filtering."""
-        if not self.memories:
+        if not self.memories or self.embeddings is None:
             return []
         
         # Generate query embedding
@@ -89,7 +90,7 @@ class BaselineRAG:
         
         return results
     
-    def flag_memory(self, memory_id: str, reason: str = None):
+    def flag_memory(self, memory_id: str, reason: Optional[str] = None):
         """Flag a memory as incorrect (but still returns it in queries)."""
         for memory in self.memories:
             if memory["memory_id"] == memory_id:

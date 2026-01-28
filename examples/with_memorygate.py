@@ -20,8 +20,8 @@ import requests
 if sys.platform == 'win32':
     try:
         # Try to reconfigure stdout/stderr to UTF-8
-        sys.stdout.reconfigure(encoding='utf-8')
-        sys.stderr.reconfigure(encoding='utf-8')
+        sys.stdout.reconfigure(encoding='utf-8')  # type: ignore
+        sys.stderr.reconfigure(encoding='utf-8')  # type: ignore
     except (AttributeError, ValueError):
         # Fallback for older Python versions - wrap stdout/stderr
         sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
