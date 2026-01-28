@@ -1,0 +1,19 @@
+{
+  "scenario": "company_policy_update",
+  "query": "What is the office address?",
+  "initial_fact": {
+    "memory_id": "policy_2025",
+    "content": "Office location: 123 Tech Street, San Francisco, CA 94105"
+  },
+  "corrected_fact": {
+    "memory_id": "policy_2026",
+    "content": "Office location: 456 Innovation Drive, San Francisco, CA 94107 (NEW LOCATION - moved in December 2025)"
+  },
+  "correction_action": {
+    "memory_id": "policy_2025",
+    "action": "flag",
+    "reason": "superseded_by_policy_2026"
+  },
+  "expected_baseline_behavior": "Returns old address in top results",
+  "expected_memorygate_behavior": "Suppresses old address, only returns new address"
+}

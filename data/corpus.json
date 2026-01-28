@@ -1,0 +1,18 @@
+[
+  {
+    "id": "policy_2025",
+    "content": "Company Policy Document - 2025\nLast Updated: January 15, 2025\n\nMEMORYGATE CORPORATION\nEmployee Handbook and Company Policies\n\nSECTION 1: WORK SCHEDULE\n- Standard work hours: 9:00 AM to 5:00 PM, Monday through Friday\n- Office location: 123 Tech Street, San Francisco, CA 94105\n- Remote work policy: Employees may work from home 2 days per week\n- Vacation days: 15 days per year for all employees\n\nSECTION 2: BENEFITS\n- Health insurance: Company covers 80% of premium costs\n- Dental insurance: Company covers 70% of premium costs\n- 401(k) matching: Company matches up to 5% of employee contributions\n- Stock options: Available after 1 year of employment\n\nSECTION 3: SALARY STRUCTURE\n- Entry-level positions: $60,000 - $75,000 annually\n- Mid-level positions: $80,000 - $120,000 annually\n- Senior positions: $130,000 - $180,000 annually\n- Annual salary review: Conducted every January\n\nSECTION 4: PROJECT DEADLINES\n- Q1 2025 projects: Due March 31, 2025\n- Q2 2025 projects: Due June 30, 2025\n- Q3 2025 projects: Due September 30, 2025\n- Q4 2025 projects: Due December 31, 2025\n\nSECTION 5: CONTACT INFORMATION\n- HR Department: hr@memorygate.io\n- IT Support: it@memorygate.io\n- Main phone: (415) 555-0100\n- Emergency contact: (415) 555-0199\n\nThis document is effective as of January 15, 2025 and supersedes all previous policy documents.",
+    "metadata": {
+      "year": 2025,
+      "superseded": false
+    }
+  },
+  {
+    "id": "policy_2026",
+    "content": "Company Policy Document - 2026 UPDATED\nLast Updated: January 8, 2026\n\nMEMORYGATE CORPORATION\nEmployee Handbook and Company Policies - REVISED\n\nIMPORTANT: This document updates and replaces the 2025 policy document. All previous policies are superseded.\n\nSECTION 1: WORK SCHEDULE\n- Standard work hours: 9:00 AM to 5:00 PM, Monday through Friday\n- Office location: 456 Innovation Drive, San Francisco, CA 94107 (NEW LOCATION - moved in December 2025)\n- Remote work policy: Employees may work from home 3 days per week (UPDATED from 2 days)\n- Vacation days: 20 days per year for all employees (INCREASED from 15 days)\n\nSECTION 2: BENEFITS\n- Health insurance: Company covers 85% of premium costs (INCREASED from 80%)\n- Dental insurance: Company covers 75% of premium costs (INCREASED from 70%)\n- 401(k) matching: Company matches up to 6% of employee contributions (INCREASED from 5%)\n- Stock options: Available after 6 months of employment (REDUCED from 1 year)\n\nSECTION 3: SALARY STRUCTURE\n- Entry-level positions: $65,000 - $80,000 annually (INCREASED from $60k-$75k)\n- Mid-level positions: $85,000 - $130,000 annually (INCREASED from $80k-$120k)\n- Senior positions: $140,000 - $200,000 annually (INCREASED from $130k-$180k)\n- Annual salary review: Conducted every January (unchanged)\n\nSECTION 4: PROJECT DEADLINES\n- Q1 2026 projects: Due March 31, 2026\n- Q2 2026 projects: Due June 30, 2026\n- Q3 2026 projects: Due September 30, 2026\n- Q4 2026 projects: Due December 31, 2026\n\nSECTION 5: CONTACT INFORMATION\n- HR Department: hr@memorygate.io (unchanged)\n- IT Support: support@memorygate.io (UPDATED from it@memorygate.io)\n- Main phone: (415) 555-0200 (UPDATED from 555-0100)\n- Emergency contact: (415) 555-0299 (UPDATED from 555-0199)\n\nThis document is effective as of January 8, 2026 and supersedes the January 15, 2025 policy document.",
+    "metadata": {
+      "year": 2026,
+      "supersedes": "policy_2025"
+    }
+  }
+]
