@@ -14,10 +14,30 @@ import sys
 from pathlib import Path
 from typing import List, Dict, Any
 import requests
-from dotenv import load_dotenv
+
+# Load .env file manually (handles BOM and path resolution)
+def load_env_file(env_path: Path) -> None:
+    """Load environment variables from .env file, handling BOM."""
+    if not env_path.exists():
+        return
+    
+    try:
+        # Use utf-8-sig to automatically strip BOM if present
+        with open(env_path, 'r', encoding='utf-8-sig') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    key, value = line.split('=', 1)
+                    key = key.strip()
+                    value = value.strip().strip('"').strip("'")
+                    if key and value:
+                        os.environ[key] = value
+    except Exception as e:
+        print(f"[WARNING] Could not load .env file: {e}")
 
 # Load environment variables
-load_dotenv(Path(__file__).parent.parent / ".env")
+env_file = Path(__file__).parent.parent / ".env"
+load_env_file(env_file)
 
 # Load corpus and benchmark
 CORPUS_PATH = Path(__file__).parent.parent / "data" / "corpus.json"
@@ -51,7 +71,7 @@ class MemoryGateClient:
         }
         
         print(f"[MemoryGate] API URL: {self.api_url}")
-        print(f"[MemoryGate] API Key: {self.api_key[:20]}...")
+        print(f"[MemoryGate] API Key: (loaded, length={len(self.api_key)})")
     
     def ingest(self, memory_id: str, content: str, metadata: Dict[str, Any] = None, initial_trust: float = 1.0) -> bool:
         """Ingest a memory into MemoryGate."""
