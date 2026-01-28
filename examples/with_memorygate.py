@@ -56,7 +56,7 @@ class MemoryGateClient:
             api_url: MemoryGate API URL (from environment or parameter)
         """
         self.api_key = api_key or os.getenv("MEMORYGATE_API_KEY")
-        self.api_url = (api_url or os.getenv("MEMORYGATE_API_URL", "https://api.memorygate.io")).rstrip('/')
+        self.api_url = (api_url or os.getenv("MEMORYGATE_API_URL", "https://memorygate-production.up.railway.app")).rstrip('/')
         
         if not self.api_key:
             print("ERROR: MEMORYGATE_API_KEY not found!")
