@@ -30,6 +30,12 @@ python examples/with_memorygate.py
 
 Trust filtering occurs in the `/v1/query` API response. The MemoryGate API applies trust weighting server-side and excludes memories with `low_confidence: true` or `is_suppressed: true` from the results. **This happens before the LLM sees context**—it is not prompt weighting or post-processing. The trust filter is a pre-LLM retrieval gate that prevents corrected facts from entering the context window.
 
+### How MemoryGate Works
+
+**MemoryGate returns all memories with trust/reliability scores. It does not enforce hiding by default. Consumers choose thresholds or policies (hide, warn, audit).**
+
+MemoryGate doesn't decide what to hide; it returns trust as a first-class signal. Relevance may already rank the right answer first, but trust widens the gap so invalid facts stop competing in top-k context. **Relevance** answers *matching*. **Trust** answers *validity*. You're not making the decision—you're **widening the confidence gap** so downstream systems don't have to arbitrate ambiguity.
+
 ## Output Interpretation
 
 ### Baseline RAG (`baseline_rag.py`)
@@ -40,9 +46,9 @@ Trust filtering occurs in the `/v1/query` API response. The MemoryGate API appli
 
 ### MemoryGate (`with_memorygate.py`)
 
-- Shows old fact suppressed after correction
-- Only new fact (e.g., "456 Innovation Drive") appears in results
-- Trust filtering excludes low-confidence memories before LLM context
+- Shows old fact marked as **LOW TRUST / DECAYED** after correction
+- New fact (e.g., "456 Innovation Drive") appears with higher confidence
+- Trust scores widen the confidence gap—low-trust memories are flagged, allowing consumers to choose filtering policies
 
 ## Benchmark Scenario
 
@@ -51,7 +57,7 @@ The demo uses a deterministic scenario from `benchmarks/conflicting_facts.json`:
 1. **Initial state**: Two policy documents (2025 and 2026) with conflicting office addresses
 2. **Query**: "What is the office address?"
 3. **Correction**: Flag the 2025 policy as superseded
-4. **Re-query**: Compare results—baseline RAG still returns old address, MemoryGate suppresses it
+4. **Re-query**: Compare results—baseline RAG still returns old address, MemoryGate marks it as low trust/decayed
 
 ## Architecture
 
@@ -63,7 +69,7 @@ MemoryGate:
   Query → Vector Search → Trust Filter → Top Results (excludes corrected facts) → LLM Context
 ```
 
-The trust filter is applied server-side in the `/v1/query` endpoint response. Memories with low trust scores (from corrections) are marked as `low_confidence: true` and excluded from the `results` array.
+The trust filter is applied server-side in the `/v1/query` endpoint response. Memories with low trust scores (from corrections) are marked as `low_confidence: true` and excluded from the `results` array. This demonstrates how trust scores change eligibility pressure without deletion—scores provide signals, not automated decisions. This demonstrates how trust scores change eligibility pressure without deletion—scores provide signals, not automated decisions.
 
 ## Requirements
 
