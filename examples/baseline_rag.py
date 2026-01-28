@@ -82,7 +82,7 @@ class BaselineRAG:
                 memory["trust_weight"] = 0.0  # Set trust to 0, but still retrievable
                 memory["flagged"] = True
                 print(f"[Baseline RAG] Flagged memory: {memory_id} (reason: {reason})")
-                print(f"[Baseline RAG] ⚠️  WARNING: Memory still appears in query results!")
+                print(f"[Baseline RAG] WARNING: Memory still appears in query results!")
                 return
         print(f"[Baseline RAG] Memory not found: {memory_id}")
 
@@ -149,7 +149,7 @@ def main():
     # Re-query (demonstrates the problem)
     print(f"\n[6] Re-querying: '{query}'")
     print("-" * 70)
-    print("⚠️  PROBLEM: Even after flagging, the old fact still appears!")
+    print("PROBLEM: Even after flagging, the old fact still appears!")
     print()
     
     results_after = rag.query(query, n_results=3)
@@ -168,7 +168,7 @@ def main():
             print(f"      Snippet: {snippet}")
         
         if result.get('flagged'):
-            print(f"      ⚠️  WRONG ANSWER STILL IN RESULTS!")
+            print(f"      WARNING: WRONG ANSWER STILL IN RESULTS!")
     
     print("\n" + "=" * 70)
     print("CONCLUSION")

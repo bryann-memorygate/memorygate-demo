@@ -17,6 +17,8 @@ cp .env.example .env
 
 Edit `.env` with your `MEMORYGATE_API_KEY` from [https://www.memorygate.io/#request-access](https://www.memorygate.io/#request-access)
 
+**Note:** The default API endpoint is `https://memorygate-production.up.railway.app`. You can override it by setting `MEMORYGATE_API_URL` in your `.env` file.
+
 ### 2. Run Demo
 
 ```bash
@@ -68,6 +70,41 @@ The trust filter is applied server-side in the `/v1/query` endpoint response. Me
 - Python 3.10+
 - `MEMORYGATE_API_KEY` from [memorygate.io](https://www.memorygate.io/#request-access)
 - Dependencies listed in `requirements.txt`
+
+## Troubleshooting
+
+### Windows Compatibility
+
+The scripts use ASCII-safe characters for cross-platform compatibility. All output is compatible with Windows console encoding.
+
+### .env File Issues
+
+If you get `ERROR: MEMORYGATE_API_KEY not found!`:
+
+1. **Check file location**: Ensure `.env` is in the repository root (same directory as `README.md`)
+2. **Check file encoding**: The `.env` file should be UTF-8 without BOM. The script handles BOM automatically, but if issues persist:
+   - On Windows: Use Notepad++ or VS Code to save as "UTF-8" (not "UTF-8 with BOM")
+   - On Linux/Mac: Standard UTF-8 is fine
+3. **Check format**: Ensure the file contains exactly:
+   ```
+   MEMORYGATE_API_KEY=your_key_here
+   MEMORYGATE_API_URL=https://memorygate-production.up.railway.app
+   ```
+   (No quotes around values, no spaces around `=`)
+
+### API Connection Issues
+
+If you get DNS resolution errors:
+
+1. **Verify API endpoint**: Default is `https://memorygate-production.up.railway.app`
+2. **Check network**: Ensure you can reach the API endpoint
+3. **Override URL**: Set `MEMORYGATE_API_URL` in `.env` if using a different endpoint
+
+### Common Errors
+
+- **`UnicodeEncodeError`**: Should not occur - all Unicode characters have been removed
+- **`ModuleNotFoundError`**: Run `pip install -r requirements.txt`
+- **`ConnectionError`**: Check your internet connection and API endpoint availability
 
 ## Files
 

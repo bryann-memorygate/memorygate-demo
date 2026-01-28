@@ -94,7 +94,7 @@ class MemoryGateClient:
             print(f"[MemoryGate] ✅ Ingested: {memory_id}")
             return result.get("status") == "success"
         except requests.exceptions.RequestException as e:
-            print(f"[MemoryGate] ❌ Failed to ingest {memory_id}: {e}")
+            print(f"[MemoryGate] ERROR: Failed to ingest {memory_id}: {e}")
             if hasattr(e.response, 'text'):
                 print(f"    Response: {e.response.text}")
             return False
@@ -146,7 +146,7 @@ class MemoryGateClient:
             )
             response.raise_for_status()
             result = response.json()
-            print(f"[MemoryGate] ✅ Feedback applied: {action} on {memory_id}")
+            print(f"[MemoryGate] SUCCESS: Feedback applied: {action} on {memory_id}")
             return result.get("status") in ("success", "queued")
         except requests.exceptions.RequestException as e:
             print(f"[MemoryGate] ❌ Feedback failed: {e}")
@@ -186,7 +186,7 @@ def main():
             initial_trust=1.0
         )
         if not success:
-            print(f"    ⚠️  Failed to ingest {doc['id']}")
+            print(f"    WARNING: Failed to ingest {doc['id']}")
     
     # Initial query
     query = scenario["query"]
@@ -230,7 +230,7 @@ def main():
     )
     
     if success:
-        print(f"    ✅ Correction applied: {correction['memory_id']} flagged")
+        print(f"    SUCCESS: Correction applied: {correction['memory_id']} flagged")
         print(f"    Trust decay applied - memory will be suppressed in future queries")
     
     # Re-query (demonstrates the solution)
@@ -246,7 +246,7 @@ def main():
     for i, result in enumerate(results_after, 1):
         print(f"\n  [{i}] Memory ID: {result['memory_id']}")
         print(f"      Relevance (semantic similarity): {result['relevance']:.4f}")
-        print(f"      Trust Score (reliability): {result['reliability']:.4f}  ← Shows decay, not removal")
+        print(f"      Trust Score (reliability): {result['reliability']:.4f}  (Shows decay, not removal)")
         print(f"      Confidence (relevance × trust): {result['confidence']:.4f}")
         print(f"      Low Confidence: {result['low_confidence']}")
         print(f"      Suppressed: {result['is_suppressed']}")
@@ -262,7 +262,7 @@ def main():
             if result['low_confidence'] or result['is_suppressed']:
                 print(f"      ✅ CORRECTED MEMORY SUPPRESSED (trust decay: {result['reliability']:.4f} → filtered)")
             else:
-                print(f"      ⚠️  Corrected memory still active (trust: {result['reliability']:.4f}, may need time to propagate)")
+                print(f"      WARNING: Corrected memory still active (trust: {result['reliability']:.4f}, may need time to propagate)")
     
     print(f"\n    Active results: {response_after.get('active_count', 0)}")
     print(f"    Suppressed results: {response_after.get('suppressed_count', 0)}")
@@ -283,7 +283,7 @@ def main():
         print("  2. Low-confidence memories are excluded from results")
         print("  3. Trust decay applied server-side, not prompt weighting")
     else:
-        print("⚠️  Note: Corrected memory may still appear if trust decay hasn't fully propagated.")
+        print("NOTE: Corrected memory may still appear if trust decay hasn't fully propagated.")
         print("   This is expected behavior - trust decay is gradual, not instant deletion.")
     print("=" * 70)
 
