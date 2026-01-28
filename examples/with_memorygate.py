@@ -126,7 +126,28 @@ class MemoryGateClient:
                 timeout=10
             )
             response.raise_for_status()
-            return response.json()
+            result = response.json()
+            
+            # Client-side validation: Fix low_confidence flag based on confidence score
+            # API uses trust < 0.2, but we also check confidence < 0.15 for better accuracy
+            CONFIDENCE_THRESHOLD = 0.15
+            TRUST_THRESHOLD = 0.2
+            
+            for item in result.get("results", []):
+                confidence = item.get("confidence", 1.0)
+                trust = item.get("reliability", 1.0)
+                api_low_confidence = item.get("low_confidence", False)
+                
+                # Correct low_confidence flag if confidence is below threshold
+                # or trust is below threshold (even if API didn't flag it)
+                should_be_low = confidence < CONFIDENCE_THRESHOLD or trust < TRUST_THRESHOLD
+                
+                if should_be_low and not api_low_confidence:
+                    # API flag is incorrect - correct it client-side
+                    item["low_confidence"] = True
+                    item["_confidence_corrected"] = True  # Mark as corrected for debugging
+            
+            return result
         except requests.exceptions.RequestException as e:
             print(f"[MemoryGate] ERROR: Query failed: {e}")
             if hasattr(e, 'response') and e.response is not None:
@@ -213,7 +234,10 @@ def main():
         print(f"      Relevance (semantic similarity): {result['relevance']:.4f}")
         print(f"      Trust Score (reliability): {result['reliability']:.4f}  (Decays with corrections)")
         print(f"      Confidence (relevance × trust): {result['confidence']:.4f}")
-        print(f"      Low Confidence: {result['low_confidence']}")
+        low_conf_display = result['low_confidence']
+        if result.get('_confidence_corrected'):
+            low_conf_display = f"{result['low_confidence']} (corrected client-side)"
+        print(f"      Low Confidence: {low_conf_display}")
         print(f"      Suppressed: {result['is_suppressed']}")
         
         # Extract relevant snippet
@@ -260,7 +284,10 @@ def main():
         print(f"      Relevance (semantic similarity): {result['relevance']:.4f}")
         print(f"      Trust Score (reliability): {result['reliability']:.4f}  (Shows decay, not removal)")
         print(f"      Confidence (relevance × trust): {result['confidence']:.4f}")
-        print(f"      Low Confidence: {result['low_confidence']}")
+        low_conf_display = result['low_confidence']
+        if result.get('_confidence_corrected'):
+            low_conf_display = f"{result['low_confidence']} (corrected client-side)"
+        print(f"      Low Confidence: {low_conf_display}")
         print(f"      Suppressed: {result['is_suppressed']}")
         
         # Extract relevant snippet
