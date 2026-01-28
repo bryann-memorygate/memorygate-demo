@@ -149,7 +149,7 @@ class MemoryGateClient:
             print(f"[MemoryGate] SUCCESS: Feedback applied: {action} on {memory_id}")
             return result.get("status") in ("success", "queued")
         except requests.exceptions.RequestException as e:
-            print(f"[MemoryGate] ❌ Feedback failed: {e}")
+            print(f"[MemoryGate] ERROR: Feedback failed: {e}")
             if hasattr(e, 'response') and e.response is not None:
                 print(f"    Response: {e.response.text}")
             return False
