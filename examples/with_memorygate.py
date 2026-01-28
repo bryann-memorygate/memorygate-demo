@@ -11,9 +11,21 @@ This script shows MemoryGate API integration WITH trust filtering.
 import json
 import os
 import sys
+import io
 from pathlib import Path
 from typing import List, Dict, Any
 import requests
+
+# Fix Windows console encoding for Unicode/emoji support
+if sys.platform == 'win32':
+    try:
+        # Try to reconfigure stdout/stderr to UTF-8
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    except (AttributeError, ValueError):
+        # Fallback for older Python versions - wrap stdout/stderr
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
 # Load .env file manually (handles BOM and path resolution)
 def load_env_file(env_path: Path) -> None:

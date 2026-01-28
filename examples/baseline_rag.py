@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Baseline RAG Demo - Standard RAG Behavior
 
@@ -10,10 +11,23 @@ This script shows standard RAG behavior WITHOUT trust filtering.
 
 import json
 import os
+import sys
+import io
 from pathlib import Path
 from typing import List, Dict, Any
 import numpy as np
 from sentence_transformers import SentenceTransformer
+
+# Fix Windows console encoding for Unicode/emoji support
+if sys.platform == 'win32':
+    try:
+        # Try to reconfigure stdout/stderr to UTF-8
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    except (AttributeError, ValueError):
+        # Fallback for older Python versions - wrap stdout/stderr
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
 # Load corpus
 CORPUS_PATH = Path(__file__).parent.parent / "data" / "corpus.json"
@@ -82,7 +96,7 @@ class BaselineRAG:
                 memory["trust_weight"] = 0.0  # Set trust to 0, but still retrievable
                 memory["flagged"] = True
                 print(f"[Baseline RAG] Flagged memory: {memory_id} (reason: {reason})")
-                print(f"[Baseline RAG] WARNING: Memory still appears in query results!")
+                print(f"[Baseline RAG] ⚠️  WARNING: Memory still appears in query results!")
                 return
         print(f"[Baseline RAG] Memory not found: {memory_id}")
 
@@ -149,7 +163,7 @@ def main():
     # Re-query (demonstrates the problem)
     print(f"\n[6] Re-querying: '{query}'")
     print("-" * 70)
-    print("PROBLEM: Even after flagging, the old fact still appears!")
+    print("⚠️  PROBLEM: Even after flagging, the old fact still appears!")
     print()
     
     results_after = rag.query(query, n_results=3)
